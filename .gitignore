@@ -1,0 +1,35 @@
+# Compiled files
+*.com
+*.exe
+*.obj
+*.o
+*.bin
+*.lst
+*.map
+
+# Backup files
+*.zip
+*.orig
+*~
+*.diff
+*.rej
+
+# Test files (if you don't want to commit them)
+test
+test.o
+try.asm
+try.com
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Kernel-master submodule (if you want to keep it as submodule)
+# Or ignore it if you don't need version control for it
+# kernel-master/
