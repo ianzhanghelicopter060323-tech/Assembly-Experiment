@@ -1,52 +1,52 @@
 
-# 02 DOS .COM 格式
+# 02 DOS .COM Format
 
-## DOS 8086 汇编程序结构
+## DOS 8086 Assembly Program Structure
 
-对于 DOS 8086 汇编，标准结构通常是：
-1. 程序说明（注释）
-2. 内存模型/模式定义
-3. 堆栈段定义
-4. 数据段定义
-5. 代码段定义
-   - 程序入口
-   - 初始化段寄存器
-   - 主程序逻辑
-   - 程序退出
-6. 程序结束标记
+For DOS 8086 assembly, the standard structure is typically:
+1. Program description (comments)
+2. Memory model/mode definition
+3. Stack segment definition
+4. Data segment definition
+5. Code segment definition
+   - Program entry point
+   - Initialize segment registers
+   - Main program logic
+   - Program exit
+6. Program end marker
 
-需要注意的是，.COM格式程序是DOS汇编的一种特殊形式，它简化了上述结构，所有内容都在一个段中，不需要显式定义多个段。
+Note that .COM format programs are a special form of DOS assembly that simplifies the above structure. All content is in a single segment, and there is no need to explicitly define multiple segments.
 
 
 
-## COM格式介绍
+## COM Format Introduction
 
-.COM格式是DOS系统中最简单的可执行文件格式，全称为Command格式。这种格式具有以下特点：
+The .COM format is the simplest executable file format in DOS systems, with the full name "Command format". This format has the following characteristics:
 
-**COM格式的特点：**
+**Characteristics of COM Format:**
 
-1. **固定起始地址**：所有.COM程序必须从偏移地址100h（256字节）处开始执行。这是因为DOS在加载.COM文件时，会在程序前预留256字节的PSP（Program Segment Prefix，程序段前缀）空间。
+1. **Fixed Starting Address**: All .COM programs must start execution at offset address 100h (256 bytes). This is because DOS reserves 256 bytes of PSP (Program Segment Prefix) space before the program when loading .COM files.
 
-2. **单一段结构**：.COM程序只使用一个段（代码、数据、堆栈都在同一个段中），最大程序大小限制为64KB（包括PSP的256字节，实际可用空间约为65536-256=65280字节）。
+2. **Single Segment Structure**: .COM programs use only one segment (code, data, and stack are all in the same segment), with a maximum program size limit of 64KB (including 256 bytes of PSP, the actual available space is approximately 65536-256=65280 bytes).
 
-3. **简单加载机制**：DOS直接将整个文件加载到内存中，无需复杂的段重定位，程序入口点固定为100h。
+3. **Simple Loading Mechanism**: DOS directly loads the entire file into memory without complex segment relocation. The program entry point is fixed at 100h.
 
-4. **无需链接器**：.COM文件通常由汇编器直接生成，不需要链接步骤，编译过程更简单。
+4. **No Linker Required**: .COM files are usually generated directly by the assembler, without a linking step, making the compilation process simpler.
 
-5. **适合小程序**：由于大小限制，.COM格式适合编写简单的工具程序、批处理辅助程序等。
+5. **Suitable for Small Programs**: Due to size limitations, the .COM format is suitable for writing simple utility programs, batch helper programs, etc.
 
-**COM格式与EXE格式的区别：**
+**Differences between COM Format and EXE Format:**
 
-| 特性 | COM格式 | EXE格式 |
-|------|---------|---------|
-| 文件大小限制 | ≤64KB | 无限制 |
-| 段结构 | 单一段 | 多段（代码段、数据段、堆栈段） |
-| 起始地址 | 固定100h | 可配置 |
-| 编译方式 | 直接汇编 | 汇编+链接 |
-| 复杂度 | 简单 | 复杂 |
-| 适用场景 | 小程序 | 大型程序 |
+| Feature | COM Format | EXE Format |
+|---------|------------|------------|
+| File Size Limit | ≤64KB | Unlimited |
+| Segment Structure | Single segment | Multiple segments (code, data, stack) |
+| Starting Address | Fixed 100h | Configurable |
+| Compilation Method | Direct assembly | Assembly + linking |
+| Complexity | Simple | Complex |
+| Use Cases | Small programs | Large programs |
 
-**COM格式程序结构：**
+**COM Format Program Structure:**
 
 ``` asm
 ; program_name.asm - DOS .COM format
@@ -68,22 +68,22 @@ start:
     INT 21h        ; Call DOS interrupt
 ```
 
-**关键要点说明：**
+**Key Points:**
 
-1. **`org 100h`指令**：这是COM格式程序必须的第一条指令，告诉汇编器程序将从偏移地址100h开始执行。如果没有这条指令，程序中的地址引用将不正确。
+1. **`org 100h` Instruction**: This is the first required instruction for COM format programs, telling the assembler that the program will start execution at offset address 100h. Without this instruction, address references in the program will be incorrect.
 
-2. **程序入口**：COM程序的入口点就是文件的第一条可执行指令（在`org 100h`之后），不需要像EXE程序那样定义`main`或`_start`标签。
+2. **Program Entry Point**: The entry point of a COM program is the first executable instruction in the file (after `org 100h`). There is no need to define a `main` or `_start` label like in EXE programs.
 
-3. **段寄存器初始化**：在COM程序中，CS（代码段）、DS（数据段）、ES（附加段）、SS（堆栈段）都指向同一个段，SP（堆栈指针）初始化为0FFFEh。通常不需要手动初始化段寄存器。
+3. **Segment Register Initialization**: In COM programs, CS (code segment), DS (data segment), ES (extra segment), and SS (stack segment) all point to the same segment. SP (stack pointer) is initialized to 0FFFEh. Usually, there is no need to manually initialize segment registers.
 
-4. **程序退出**：使用DOS中断21h的功能4Ch来退出程序，这是标准的DOS程序退出方式。
+4. **Program Exit**: Use DOS interrupt 21h function 4Ch to exit the program. This is the standard DOS program exit method.
 
-**编译COM格式程序：**
+**Compiling COM Format Programs:**
 
-使用NASM编译COM格式程序时，需要使用`-f bin`格式（二进制格式），并指定输出文件扩展名为`.com`：
+When compiling COM format programs with NASM, use the `-f bin` format (binary format) and specify the output file extension as `.com`:
 
 ```bash
 nasm -f bin program.asm -o program.com
 ```
 
-编译完成后，可以在DOSBox中直接运行生成的.com文件。
+After compilation, you can directly run the generated .com file in DOSBox.
