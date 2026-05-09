@@ -1,4 +1,7 @@
-# Assembly Language Learning Project
+# For Assembly Experiment of ZJUT
+## Notification
+
+This repository is origined from```https://github.com/sxw-123456/assembly-learning.git``` by *XinWen Suo*
 
 ## Project Introduction
 
